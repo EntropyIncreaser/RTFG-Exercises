@@ -1,0 +1,334 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{3}
+\chapter{Character Theory and the Orthogonality Relations}
+
+\begin{exercise}
+  Let $\varphi\colon G \to \GL(U)$, $\psi\colon G \to \GL(V )$ and
+  $\rho\colon G \to \GL(W )$ be representations of a group $G$. Suppose that
+  $T\in \Hom_G(\varphi, \psi)$ and $S\in \Hom_G(\psi, \rho)$.
+  Prove that $ST \in \Hom_G(\psi, \rho)$.
+  \begin{proof}
+    For each $g$, $ST \varphi_g = S \psi_g T = \rho_g ST$, so $ST\in \Hom_G(\psi, \rho)$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $\varphi$ be a representation of a group $G$ with character $\chi_\varphi$. Prove that
+  $\chi_\varphi(g^{-1}) =\overline{\chi_\varphi(g)}$.
+  \begin{proof}
+    $\varphi$ is equivalent to some unitary representation $\rho$, then we have $\chi_\varphi = \chi_\rho$.
+    Then we have $\chi_\rho(g^{-1}) = \Tr(\rho_{g^{-1}}) = \Tr(\rho_g^*) = \overline{\Tr \rho_g} = \overline{\chi_\rho(g)}$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $\varphi\colon G \to \GL(V )$ be an irreducible representation. Let
+  \[ Z(G) = \{ a\in G \mid ag = ga, \forall g\in G\} \]
+  be the center of $G$. Show that if $a \in Z(G)$, then $\varphi(a) = \lambda I$ for some $\lambda \in \bbC^*$.
+  \begin{proof}
+    Since $a\in Z(G)$, we have $\varphi_a \varphi_g = \varphi_g \varphi_a$ for all $g$, so
+    $\varphi_a\in \Hom_G(\varphi, \varphi)$. Then we have $\varphi_a = \lambda I$, since
+    $\varphi_a\in \GL(V)$, we have $\lambda \neq 0$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a group. Show that $f \colon G \to \bbC$ is a class function if and
+  only if $f(gh) = f(hg)$ for all $g, h \in G$.
+  \begin{proof}
+    Since this is for all $g, h$, we substitude by $g = h^{-1}x$, the statement
+    is equivalent to $f(h^{-1}xh) = f(x)$ for all $x, h\in G$. Which is the definition
+    of class function.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  For $v = (c_1, \dots , c_m) \in (\bbZ/2\bbZ)^m$, let $\alpha(v) = \{i \mid c_i = [1]\}$. For
+  each $Y \subseteq \{1, \dots, m\}$, define a function $\chi_Y\colon (\bbZ/2\bbZ)^m \to \bbC$ by
+  \[ \chi_Y (v) = (-1)^{|\alpha(v) \cap Y|}. \]
+  \begin{enumerate}
+    \item Show that $\chi_Y$ is a character.
+    \begin{proof}
+      We only need to prove that $\chi_Y$ is a representation, this can be verified by definition.
+    \end{proof}
+    \item Show that every irreducible character of $(\bbZ/2\bbZ)^m$ is of the form $\chi_Y$ for some
+    subset $Y$ of $\{1, \dots , m\}$.
+    \begin{proof}
+      Since $(\bbZ/2\bbZ)^m$ is abelian, the irreducible representation must have degree $1$.
+      Thus such character $\chi$ is a representation. Let $Y = \{ i \mid e_i = ([0], \dots, [1], \dots, [0]) = -1 \}$,
+      where the $i$th position of $e_i$ is $[1]$.
+      Then $\chi$ agrees with $\chi_Y$ on $\{ e_i \}$, which generates the whole $(\bbZ/2\bbZ)^m$.
+      Then we have $\chi = \chi_Y$.
+    \end{proof}
+    \item Show that if $X, Y \subseteq \{1, \dots , m\}$, then $\chi_X(v)\chi_Y (v) = \chi_{X\Delta Y}(v)$ where
+    $X \Delta Y = X\cup Y \smallsetminus (X\cap Y)$ is the symmetric difference.
+    \begin{proof}
+      Can be verified by definition.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $\sgn\colon S_n \to \bbC^*$ be the representation given by
+  \[ \sgn(\sigma) = \begin{cases}
+    1 & \sigma \text{ is even}\\
+    -1 & \sigma \text{ is odd.}
+  \end{cases} \]
+  Show that if $\chi$ is the character of an irreducible representation of $S_n$ not equivalent
+  to $\sgn$, then
+  \[ \sum_{\sigma \in S_n} \sgn(\sigma) \chi(\sigma) = 0. \]
+  \begin{proof}
+    Since $\sgn$ has degree $1$, it is irreducible and $\chi_{\sgn} = \sgn$.
+    The equation directly follows from $\ang{\chi, \chi_{\sgn}} = 0$, which is implied by
+    the first orthogonality relations.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $\varphi\colon G \to \GL_n(\bbC)$ and $\rho\colon G \to \GL_m(\bbC)$ be representations.
+  Let $V = M_{mn}(\bbC)$. Define $\tau\colon G \to \GL(V )$ by $\tau_g(A) = \rho_g A \varphi^T_g$.
+  \begin{enumerate}
+    \item Show that $\tau$ is a representation of $G$.
+    \begin{proof}
+      Clearly $\tau_g$ is a linear mapping, and $\tau_1(A) = \rho_1 A \varphi_1^T = A$, and
+      $\tau_g \tau_h(A) = \tau_g(\rho_h A \varphi_h^T) = \rho_{gh}A\varphi_{gh}^T = \tau_{gh}(A)$.
+      Thus $\tau_g \in \GL(V)$ for all $g$, and $\tau$ is a homomorphism, therefore $\tau$ is a representation.
+    \end{proof}
+    \item Show that
+    \[ \tau_g E_{kl} = \sum_{i,j} \rho_{ik}(g) \varphi_{jl}(g) E_{ij}. \]
+    \begin{proof}
+      By definition.
+    \end{proof}
+    \item Prove that $\chi_\tau(g) = \chi_\rho(g)\chi_\varphi(g)$.
+    \begin{proof}
+      \[ \chi_\tau(g) = \Tr(\tau_g) = \sum_{i, j} (\tau_g E_{ij})_{ij}
+      =\sum_{i,j} \rho_{ii}(g) \varphi_{jj}(g) = \chi_\rho(g) \chi_\varphi(g). \qedhere \]
+    \end{proof}
+    \item Conclude that the pointwise product of two characters of $G$ is a character of $G$.
+    \begin{proof}
+      The product character $\chi_\rho(g) \chi_\varphi(g)$ is given by the representation $\tau$.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $\alpha\colon S_n \to \GL_n(\bbC)$ be the standard representation from
+  Example 3.1.9.
+  \begin{enumerate}
+    \item Show that $\chi_\alpha(\sigma)$ is the number of fixed points of $\sigma$, that is, the number of
+    elements $k \in \{1, \dots , n\}$ such that $\sigma(k) = k$.
+    \begin{proof}
+      \[ \chi_\alpha(\sigma) = \Tr (\alpha(\sigma)) = \sum_{i} \ang{e_i, e_{\sigma(i)}}. \qedhere \]
+    \end{proof}
+    \item Show that if $n = 3$, then $\ang{\chi_\alpha, \chi_\alpha} = 2$ and hence $\alpha$ is not irreducible.
+    \begin{proof}
+      We have $\ang{\chi_\alpha, \chi_\alpha} = \frac 1{6} \sum_{\sigma} \|\chi_\alpha(\sigma)\|^2$.
+      \begin{itemize}
+        \item For $\sigma = 1$, $\norm{\chi_\alpha(\sigma)}^2 = 9$.
+        \item For $\sigma = (1\ 2), (2\ 3), (3\ 1)$, $\norm{\chi_\alpha(\sigma)}^2 = 1$.
+        \item Otherwise, $\norm{\chi_\alpha(\sigma)}^2 = 0$.
+      \end{itemize}
+      So the sum is $9 + 3\cdot 1 = 12$, we have $\ang{\chi_\alpha, \chi_\alpha} = 2$.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $\chi$ be a non-trivial irreducible character of a finite group $G$. Show
+  that
+  \[ \sum_{g\in G} \chi(g) = 0. \]
+  \begin{proof}
+    Since the trivial representation $1$ is irreducible, we have a irreducible character $\chi_1(g) = 1$
+    for all $g$. Since $\chi\neq \chi_1$, by the first orthogonality relations we have
+    $\ang{\chi, \chi_1} = 0$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $\varphi\colon G\to H$ be a surjective homomorphism and let
+  $\psi \colon H\to \GL(V )$ be an irreducible representation. Prove that $\psi \circ \varphi$ is an irreducible
+  representation of $G$.
+  \begin{proof}
+    Suppose $W\leq V$ is $G$-invariant, then for each $h\in H$, since $\varphi$ is surjective, we have
+    $\varphi(g) =h$, thus $\psi_h W = (\psi \circ \varphi)_g W \leq W$. We must have $W = 0$ or $W = V$.
+  \end{proof}
+\end{exercise}
+
+\setcounter{exercise}{12}
+\begin{exercise}
+  Let $G$ be a group and let $G'$ be the commutator subgroup of $G$. Let $\varphi: G \to G/G'$ be the
+  canonical homomorphism given by $\varphi(g) = gG'$. Prove
+  that every degree one representation $\rho\colon G \to \bbC^*$ is of the form $\psi \circ \varphi$ where
+  $\psi\colon G/G' \to \bbC^*$ is a degree one representation of the abelian group $G/G'$.
+  \begin{proof}
+    Let $N = \ker \rho$, since $G/N \cong \rho(G) \subset \bbC^*$ is commutative, we have
+    $G' \leq N$. Then $\rho$ induces the homomorphism $\psi$ such that $\rho = \psi \circ \varphi$
+    naturally.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Show that if $G$ is a finite group and $g$ is a non-trivial element
+  of $G$, then there is an irreducible representation $ϕ$ with $\varphi(g) \neq I$.
+  \begin{proof}
+    Consider the regular representation $L\colon G \to \GL(\bbC G)$, since $L_g e = g$,
+    we have $L_g \neq I$. Consider the decomposition of representation
+    $L \sim d_1\varphi^{(1)} \oplus \dots \oplus d_s\varphi^{(s)}$, suppose $\varphi^{(i)}_g$
+    is identity for all $i$, we must have $L_g= I$, so we must have some $\varphi^{(i)}$
+    such that $\varphi^{(i)}_g \neq I$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  This exercise provides an alternate proof of the orthogonality
+  relations for characters. It requires Exercise 3.5. Let $\varphi\colon G \to \GL_m(\bbC)$ and
+  $\psi\colon G \to \GL_n(\bbC)$ be representations of a finite group $G$.
+  Let $V = M_{mn}(\bbC)$ and define a representation $\rho\colon G \to \GL(V )$ by $\rho_g(A) = \varphi_g A \psi_{g}^*$.
+  \begin{enumerate}
+    \item Prove that $\chi_\rho(g) = \chi_\varphi(g)\overline{\chi_\psi(g)}$ for $g \in G$.
+    \begin{proof}
+      Follows from Exercise 4.7.
+    \end{proof}
+    \item Show that $V^G = \Hom_G(\psi, \varphi)$.
+    \begin{proof}
+      $A \in V^G \iff \varphi_g A \psi_g^* = A \iff \varphi_g A = A \psi_g \iff A \in \Hom_G(\psi, \varphi)$.
+    \end{proof}
+    \item Deduce $\dim \Hom_G(\psi, \varphi) = \ang{\chi_\varphi, \chi_\psi}$ using Exercise 3.5.
+    \begin{proof}
+      \[ \ang{\chi_\varphi, \chi_\psi} = \frac 1{|G|} \sum_{g\in G} \chi_\varphi(g)\overline{\chi_\psi(g)}
+      = \frac 1{|G|} \sum_{g\in G} \chi_\rho(g)
+      \xlongequal{\text{exercise 3.5}} \dim V^G = \dim \Hom_G(\psi, \varphi). \qedhere \]
+    \end{proof}
+    \item Deduce using Schur's lemma that if $\varphi$ and $\psi$ are irreducible representations, then
+    \[ \ang{\chi_\varphi, \chi_\psi} = \begin{cases}
+      1 & \varphi \sim \psi,\\
+      0 & \varphi \nsim \psi.
+    \end{cases} \]
+    \begin{proof}
+      Schur's lemma states that,
+      if $\varphi \nsim \psi$, we have $\Hom_G(\psi, \varphi) = 0$, otherwise
+      $\Hom_G(\psi, \varphi) = \{ \lambda I \mid \lambda \in \bbC \}$.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\end{document}
