@@ -1,0 +1,278 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{4}
+\chapter{Fourier Analysis on Finite Groups}
+
+\setcounter{exercise}{5}
+\begin{exercise}
+  Let $G$ be a finite abelian group of order $n$ and $a,b\in L(G)$. Prove the
+  Plancherel formula
+  \[ \ang{a, b} = \frac 1 n \ang{\hat a, \hat b}. \]
+  \begin{proof}
+    By linearity we only need to prove for the case $a = \delta_x, b = \delta_y$
+    for $x, y\in G$. Therefore,
+    \begin{align*}
+      \ang{\hat a, \hat b} &= \frac 1n \sum_{\chi} \hat a (\chi) \overline{\hat b(\chi)}\\
+      &= \frac 1n \sum_{\chi} \chi(x) \overline{\chi(y)}.
+    \end{align*}
+    By the second orthogonality relations, we have
+    \[ \ang{\hat a, \hat b} = \begin{cases}
+      1 & x = y\\
+      0 & x \neq y
+    \end{cases} = n \ang{a, b}. \qedhere \]
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a finite group of order $n$ and let $a, b \in L(G)$. Suppose
+  that $\varphi^{(1)},\dots ,\varphi^{(s)}$ form a complete set of representatives
+  of the irreducible unitary representations of $G$. As usual, let $d_i$ be the
+  degree of $\varphi^{(i)}$. Prove the Plancherel formula
+  \[ \ang{a, b} = \frac 1 {n^2} \sum_{i=1}^s d_i \Tr \left[ \hat{a}(\varphi^{(i)})
+  \hat b(\varphi^{(i)})^* \right]. \]
+  \begin{proof}
+    By linearity we only need to prove for the case $a = \delta_x, b = \delta_y$
+    for all $x, y\in G$. Therefore, by the Fourier inversion, we have
+    \begin{align*}
+      \widehat{\delta_x} &= \frac 1 n \sum_{i,j,k} d_i \delta_x(\varphi^{(i)})_{jk} \varphi^{(i)}_{jk}\\
+      &= \frac 1n \sum_{i,j,k} d_i (\varphi^{(i)}_x)_{jk} \varphi^{(i)}_{jk},
+    \end{align*}
+    thus,
+    \begin{align*}
+      \ang{\widehat{\delta_x}, \widehat{\delta_y}}
+      &= \frac 1{n^2} \sum_{i_1,j_1,k_1, i_2, j_2, k_2}
+      d_{i_1} (\varphi^{(i_1)}_x)_{j_1k_1}
+      \overline{d_{i_2} (\varphi^{(i_2)}_y)_{j_2k_2}}
+      \ang{\varphi_{j_1k_1}^{(i_1)}, \varphi_{j_2k_2}^{(i_2)}}\\
+      &\xlongequal{\text{Schur}}
+      \frac 1{n^2} \sum_{i,j,k} d_i^2 (\varphi^{(i)}_x)_{jk}
+      \overline{(\varphi^{(i)}_y)_{jk}} \cdot \frac 1{d_i}\\
+      &= \frac 1{n^2} \sum_{i,j,k} d_i (\varphi^{(i)}_x)_{jk}
+      \overline{(\varphi^{(i)}_y)_{jk}}\\
+      &= \frac 1{n^2} \sum_{i} d_i \Tr \left[ \widehat{\delta_x}(\varphi^{(i)})
+      \widehat{\delta_y} (\varphi^{(i)})^* \right]. \qedhere
+    \end{align*}
+  \end{proof}
+\end{exercise}
+
+\setcounter{exercise}{10}
+\begin{exercise}
+  Let $G$ be a finite group of order $n$ and let $\varphi^{(1)},\dots,\varphi^{(s)}$
+  be a complete set of unitary representatives of the equivalence classes of
+  irreducible representations of $G$. Let $\chi_i$ be the character of $\varphi^{(i)}$
+  and let $e_i = \frac{d_i}n \chi_i$ where $d_i$ is the degree of $\varphi^{(i)}$.
+  \begin{enumerate}
+    \item Show that if $f \in Z(L(G))$, then
+    \[ \hat f(\varphi^{(k)}) = \frac{n}{d_k} \ang{f, \chi_k} I. \]
+    \begin{proof}
+      Since $f\in Z(L(G))$, we have $\hat f (\varphi^{(k)}) \in Z(M_{d_k}(\bbC))$,
+      we must have $\hat f(\varphi^{(k)}) = \lambda I$ for some $\lambda$.
+      Therefore
+      \[ \lambda = \frac 1{d_k}\Tr \left[\hat f(\varphi^{(k)})\right] = \frac 1{d_k} \sum_{i=1}^{d_k} n\ang{f, \varphi_{ii}^{(k)}}
+      = \frac{n}{d_k} \ang{f, \chi_k}. \qedhere \]
+    \end{proof}
+    \item Deduce that
+    \[ \hat e_i(\varphi^{(k)}) = \begin{cases}
+      I & i = k \\
+      0 & \text{else.}
+    \end{cases} \]
+    \begin{proof}
+      \[ \hat e_i(\varphi^{(k)}) = \frac{n}{d_k} \ang{e_i, \chi_k}
+       = \frac{d_i}{d_k} \ang{\chi_i, \chi_k},  \]
+      the rest follows from the first orthogonality relations.
+    \end{proof}
+    \item Deduce that
+    \[ e_i * e_j = \begin{cases}
+      e_i & i = j\\
+      0 & \text{else.}
+    \end{cases} \]
+    \begin{proof}
+      Noticed that $\widehat{e_i * e_j} = \hat e_i \cdot \hat e_j$,
+      for all $k$ we have $\widehat{e_i * e_j}(\varphi^{(k)})$ is nonzero iff $i=j=k$.
+      So when $i\neq j$, $e_i *e_j = 0$. For $e_i * e_i$, we have $\hat e_i * \hat e_i(\varphi^{(i)}) = I^2 = \hat e_i(\varphi^{(i)})$,
+      by the isomorphism we must have $e_i * e_i = e_i$.
+    \end{proof}
+    \item Deduce that $e_1 + \dots + e_s$ is the identity $\delta_1$ of $L(G)$.
+    \begin{proof}
+      For each $k$, we have
+      \[ \widehat{e_1 + \dots + e_s}(\varphi^{(k)}) = \hat e_k (\varphi^{(k)}) = I, \]
+      so $\widehat{e_1 + \dots + e_s} = \widehat{\delta_1}$, we must have $e_1 + \dots + e_s = \delta_1$.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $G=\{g_1,\dots,g_n\}$ be a finite group of order $n$ and let $\varphi^{(1)},\dots,\varphi^{(s)}$ be
+  a complete set of unitary representatives of the equivalence classes of
+  irreducible representations of $G$. Let $\chi_i$ be the character of $\varphi^{(i)}$ and $d_i$ be the
+  degree of $\varphi^{(i)}$. Suppose $a \in Z(L(G))$ and define a linear operator $A\colon L(G) \to L(G)$
+  by $A(b) = a*b$.
+  \begin{enumerate}
+    \item Fix $1 \leq k \leq s$. Show that $\varphi^{(k)}_{ij}$ is an eigenvector of $A$
+    with eigenvalue $\frac{n}{d_k} \ang{a, \chi_k}$.
+    \begin{proof}
+      Consider $\widehat{a * \varphi^{(k)}_{ij}} = \hat a * \widehat{\varphi^{(k)}_{ij}}$,
+      since $\hat a(\varphi^{(m)})_{ij} = n\ang{a, \varphi^{(m)}_{ij}}$
+      and the only nonzero term of $\widehat{\varphi_{ij}^{(k)}}$ is $\varphi^{(k)}$,
+      which equates to $\frac{n}{d_k} E_{ij}$. We have the only nonzero term
+      of $\widehat{a * \varphi_{ij}^{(k)}}$ is at entry $\varphi^{(k)}$,
+      the value is
+      \[ \widehat{a * \varphi_{ij}^{(k)}}(\varphi^{(k)})_{lj}
+      = n\ang{a, \varphi_{li}^{(k)}} \cdot \frac{n}{d_k}. \]
+      Since $a\in Z(L(G))$, we have this term is nonzero only if $i=l$, by Exercise 5.12(1) we have
+      \[ \widehat{a * \varphi_{ij}^{(k)}}(\varphi^{(k)})_{ij}
+      = \left(\frac{n}{d_k}\right)^2\ang{a, \chi_k} \]
+      is the only nonzero term. By the inverse Fourier transform, we have
+      \[ a * \varphi_{ij}^{(k)} = \frac{n}{d_k}\ang{a, \chi_k} \varphi_{ij}^{(k)}. \qedhere \]
+    \end{proof}
+    \item Conclude that $A$ is a diagonalizable operator.
+    \begin{proof}
+      Schur orthogonality relations asserts that $\varphi_{ij}^{(k)}$ gives an orthogonal basis
+      of $L(G)$, by the previous argument, each vector is an eigenvector.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a finite abelian group.
+  \begin{enumerate}
+    \item Define $\eta \colon G \to \hat{\hat G}$ by $\eta(g)(\chi) = \chi(g)$. Prove that $\eta$ is
+    an isomorphism.
+    \begin{proof}
+      For each $g, h\in G$ and character $\chi$, we have $\eta(gh)(\chi)= \chi(gh) = \chi(g)\chi(h)
+      = (\eta(g) \eta(h))(\chi)$, so we have $\eta(gh) = \eta(g)\eta(h)$ gives a homomorphism.
+      The second orthogonality relations shows that each $\eta(g)$ is distinct, since taking
+      dual does not change the cardinality, $|\hat{\hat G}| = |G|$, $\eta$ is an isomorphism.
+    \end{proof}
+    \item Prove that $G\cong \hat G$.
+    \begin{proof}
+      By the decomposition of finite abelian group, we have $G = (\bbZ/n_1\bbZ)\times \dots \times (\bbZ/n_k\bbZ)$,
+      then it's not hard to see that $\chi_{[i_1],\dots,[i_k]}$ define by
+      \[ \chi_{[i_1],\dots,[i_k]}([j_1],\dots,[j_k])
+      = e^{i_1j_1 2\pi i / n_1} \cdots e^{i_kj_k 2\pi i / n_k} \]
+      is a representation, and $\chi$ defined by different $\chi_{[i_1],\dots,[i_k]}$
+      are distinct, and $([i_1],\dots,[i_k]) \mapsto \chi_{[i_1],\dots,[i_k]}$ is a well defined
+      homomorphism. This gives an isomorphism.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\end{document}
