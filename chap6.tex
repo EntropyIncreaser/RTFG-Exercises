@@ -1,0 +1,206 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{5}
+\chapter{Burnside's Theorem}
+
+\setcounter{exercise}{1}
+\begin{exercise}
+  Let $G$ be a non-abelian group of order $39$.
+  \begin{enumerate}
+    \item Determine the degrees of the irreducible representations of $G$ and how many
+    irreducible representations $G$ has of each degree (up to equivalence).
+    \begin{answer}
+      The degree of an irreducible representation must be $1$ or $3$.
+      Let $n$ be the number of degree one representations, $m$ be the number
+      of degree $3$ representations, then we have
+      $n + 9m = 39$, thus $n \equiv 3 \pmod 9$. Lemma 6.2.7 asserts that
+      $n \mid 39$, we must have $n=3$, $m=4$.
+    \end{answer}
+    \item Determine the number of conjugacy classes of $G$.
+    \begin{answer}
+      $n + m = 7$.
+    \end{answer}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a non-abelian group of order $21$.
+  \begin{enumerate}
+    \item Determine the degrees of the irreducible representations of $G$ and how many
+    irreducible representations $G$ has of each degree (up to equivalence).
+    \begin{answer}
+      The degree of an irreducible representation must be $1$ or $3$.
+      Let $n$ be the number of degree one representations, $m$ be the number
+      of degree $3$ representations, then we have
+      $n + 9m = 21$, thus $n \equiv 3 \pmod 9$. Lemma 6.2.7 asserts that
+      $n \mid 21$, we must have $n=3, m = 2$.
+    \end{answer}
+    \item Determine the number of conjugacy classes of $G$.
+    \begin{answer}
+      $n + m = 5$.
+    \end{answer}
+  \end{enumerate}
+\end{exercise}
+
+\setcounter{exercise}{4}
+\begin{exercise}
+  Show that if $\varphi\colon G \to \GL_d(\bbC)$ is a representation with character
+  $\chi$, then $g \in \ker \varphi$ if and only if $\chi(g) = d$.
+  \begin{proof}
+    Since $\varphi_g$ has $d$ eigenvalues that are roots of unity $\lambda_1^n = \dots = \lambda_d^n = 1$,
+    we have $\chi(g) = \lambda_1 + \dots + \lambda_d = d$ iff $\lambda_1 = \dots = \lambda_d = 1$,
+    i.e., $\varphi_g = I$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  For $\alpha\in \bbC$, denote by $\bbZ[\alpha]$ the smallest
+  subring of $\bbC$ containing $\alpha$.
+  \begin{enumerate}
+    \item Prove that $\bbZ[\alpha]=\{a_0 +a_1 \alpha+\dots +a_n \alpha^n
+    \mid n\in \bbN, a_0,\dots,a_n \in \bbZ \}$.
+    \begin{proof}
+      Clearly these elements are closed under addition
+      and multiplication, so it is a ring. By the axiom of ring, every $a_0 +a_1 \alpha+\dots +a_n \alpha^n$
+      must be in $\bbZ[\alpha]$, so we have the minimality.
+    \end{proof}
+    \item Prove that the following are equivalent:
+    \begin{enumerate}
+      \item $\alpha$ is an algebraic integer;
+      \item The additive group of $\bbZ[\alpha]$ is finitely generated;
+      \item $\alpha$ is contained in a finitely generated subgroup of the additive group of $\bbC$,
+      which is closed under multiplication by $\alpha$.
+    \end{enumerate}
+    \begin{proof}
+      (a) implies (b): Suppose $\alpha$ is an algebraic integer, we have
+      $a_0 + a_1\alpha + \dots + a_{n-1}\alpha^{n-1} + \alpha^n = 0$.
+      Therefore $1, \alpha, \dots, \alpha^{n-1}$ generates $\bbZ[\alpha]$.
+      
+      (b) clearly implies (c).
+
+      (c) implies (a): Let $y_1, \dots, y_n$ be a set of generators, $\alpha y_i$
+      then can be represented by $y_1, \dots, y_n$, by Lemma 6.1.5, $\alpha$ is an
+      algebraic integer.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\end{document}
