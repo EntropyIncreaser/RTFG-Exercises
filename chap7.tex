@@ -1,0 +1,250 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{6}
+\chapter{Group Actions and Permutation Representations}
+
+\setcounter{exercise}{1}
+\begin{exercise}
+  Let $\sigma\colon G \to S_X$ be a transitive group action with $|X| \geq 2$.
+  If $x \in X$, let
+  \[ G_x = \{ g\in G \mid \sigma_g(x) = x \}. \]
+  $G_x$ is a subgroup of $G$ called the \emph{stabilizer} of $x$. Prove that the following are
+  equivalent:
+  \begin{enumerate}
+    \item $G_x$ is transitive on $X\smallsetminus \{x\}$ for \emph{some} $x\in X$;
+    \item $G_x$ is transitive on $X\smallsetminus \{x\}$ for \emph{all} $x\in X$;
+    \item $G$ acts $2$-transitively on $X$.
+  \end{enumerate}
+  \begin{proof}
+    1 implies 2: Suppose such $x$ exists, for each $y$, let $a, b \neq y$,
+    we need to prove that there exists $g$ such that $\sigma_g(a) = b$.
+    Since the action is transitive, we have some $g$ such that $\sigma_g(x) = y$,
+    thus $x = \sigma_{g^{-1}}(y)$. Since $G_x$ is transitive on $X \smallsetminus \{x\}$,
+    we have $h\in G_x$ such that $\sigma_h$ maps $\sigma_{g^{-1}}(a)$ to $\sigma_{g^{-1}}(b)$,
+    since $\sigma_{g^{-1}}(a), \sigma_{g^{-1}}(b) \neq x$. Therefore, 
+    $\sigma_{ghg^{-1}}(a) = b$. Noticed that $\sigma_g \sigma_h \sigma_{g^{-1}}(y) = 
+    = \sigma_g \sigma_h(x) = \sigma_g(x) = y$, we have $ghg^{-1} \in G_y$.
+
+    2 implies 3: For each $(x, y)$ and $(x', y')$, suppose $x\neq y$ and $x'\neq y'$. Since $G$
+    is transitive, we have $g$ such that $\sigma_g(x, y) = (x', \sigma_g(y))$, we have $\sigma_g(y) \neq x'$.
+    Since $G_{x'}$ is transitive on $X\smallsetminus \{x'\}$, we have $h\in G_{x'}$ such that
+    $\sigma_h(x', \sigma_g(y)) = (x', y')$. We have $\sigma_{hg}(x, y) = (x', y')$.
+
+    3 clearly implies 1.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Compute the character table of $A_4$.
+  \begin{answer}
+    Noticed that $K=\{\Id, (1\ 2)(3\ 4),
+    (1\ 3)(2\ 4), (1\ 4)(2\ 3)\}$ is the commutator subgroup of $A_4$. By cardinality we must have
+    $K/A_4\cong \bbZ/3\bbZ$, therefore $A_4$ has $3$ degree one representations $\chi_1, \chi_2, \chi_3$.
+
+    It's not hard to see that $A_4$ acts $2$-transitively on $[4]$, so the augmentation representation is irreducible,
+    we have a degree three representation, its character is $\chi_4(g) = \left|\operatorname{Fix}(g)\right| - 1$.
+
+    Since $1^2 + 1^2 + 1^2 + 3^2 = 12 = |A_4|$, we found all irreducible representations.
+    See table \ref{tab:chartableA4}.
+
+    \begin{table}[htbp]
+      \centering
+      \begin{tabular}[]{ccccc}
+        \toprule
+        & $\Id$ & $(1\ 2\ 3)$ & $(1\ 3\ 2)$ & $(1\ 2)(3\ 4)$ \\ \midrule
+        $\chi_1$ & $1$ & $1$ & $1$ & $1$ \\
+        $\chi_2$ & $1$ & $e^{2\pi i/3}$ & $e^{-2\pi i/3}$ & $1$ \\
+        $\chi_3$ & $1$ & $e^{-2\pi i/3}$ & $e^{2\pi i/3}$ & $1$ \\
+        $\chi_4$ & $3$ & $0$ & $0$ & $-1$ \\
+        \bottomrule
+      \end{tabular}
+      \caption{character table of $A_4$.} \label{tab:chartableA4}
+    \end{table}
+  \end{answer}
+\end{exercise}
+
+\begin{exercise}
+  Two group actions $\sigma\colon G\to S_X$ and $\tau\colon G\to S_Y$ are isomorphic if
+  there is a bijection $\psi \colon X \to Y$ such that $\psi \sigma_g =\tau_g\psi$ for all $g\in G$.
+  \begin{enumerate}
+    \item Show that if $\tau\colon G \to S_X$ is a transitive group action, $x \in X$ and $G_x$ is the
+    stabilizer of $x$, then $\tau$ is isomorphic to the coset action $\sigma \colon G \to S_{G / G_x}$.
+    \begin{proof}
+      For each $y\in X$, by transitiveness we have $g$ such that $\sigma_g(x) = y$. It's not hard to
+      verify that $gG_x$ is the same coset whenever which $g$ we take, we can define
+      $\psi\colon y\mapsto gG_x$. Then for each $h\in G$ and $y\in X$, we have
+      $\psi \sigma_h(y) = \psi \sigma_h \sigma_g(x) = \psi \sigma_{hg}(x) = (hg)G_x
+      = \tau_h \psi(y)$. So we have $\psi \sigma_h = \tau_h \psi$, $\psi$ gives an isomorphism.
+    \end{proof}
+    \item Show that if $\sigma$ and $\tau$ are isomorphic group actions, then the corresponding permutation representations are equivalent.
+    \begin{proof}
+      Defined the linear transformation $\tilde{\psi}\colon \bbC X \to \bbC Y$ by
+      $\tilde{\psi}\colon \sum_x a_x x\to \sum_x a_x \psi(x)$, then we have
+      $\tilde{\psi} \widetilde{\sigma_g} = \widetilde{\tau_g} \tilde{\psi}$, so $\tilde \psi$ gives an
+      equivalence.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $p$ be a prime. Let $G$ be the group of all permutations $\bbZ/p\bbZ\to \bbZ/p\bbZ$ of the form
+  $x\mapsto ax+b$ with $a\in \bbZ/p\bbZ^*$ and $b\in \bbZ/p\bbZ$. Prove that the action of $G$ on
+  $\bbZ/p\bbZ$ is $2$-transitive.
+  \begin{proof}
+    Firstly, since $p$ is a prime, $\bbZ/p\bbZ$ is a field. We have $ax_1 + b = ax_2 + b \iff a(x_1-x_2) = 0\iff x_1=x_2$.
+    So $x\mapsto ax+b$ is a permutation. For each $x, x'$, we have $a = 1$ and $b = x'-x$ maps $x$ to $x'$,
+    so $G$ is transitive on $\bbZ/p\bbZ$. Fix $0\mapsto 0$, for $x,x'\neq 0$, we have $a = x'x^{-1}$ and $b=0$
+    maps $x$ to $x'$, so we have $G$ acts $2$-transitively on $\bbZ/p\bbZ$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a finite group.
+  \begin{enumerate}
+    \item Suppose that $G$ acts transitively on a finite set $X$ with $|X| \geq 2$. Show that there is
+    an element $g \in G$ with no fixed points on $X$.
+    \begin{proof}
+      Suppose we have $\left| \operatorname{Fix}(g) \right| \geq 1$ for all $g$, since $G$ is transitive
+      on $X$, by Burnside's lemma, we also have
+      \[ \frac 1{|G|} \sum_{g\in G} \left| \operatorname{Fix}(g) \right| = 1, \]
+      to achieve this equality, we must have $\left| \operatorname{Fix}(g) \right| = 1$ for all $g$.
+      But clearly $\left| \operatorname{Fix}(e) \right| = |X| > 1$, contradiction.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\setcounter{exercise}{8}
+\begin{exercise}
+  Suppose that $G$ is a finite group of order $n$ with $s$ conjugacy classes.
+  Suppose that one chooses a pair $(g, h) \in G \times G$ uniformly at random. Prove that the
+  probability $g$ and $h$ commute is $s/n$.
+  \begin{proof}
+    Clearly we have
+    \begin{align*}
+      p &= \frac 1{n^2} \sum_{g\in G} \left|\{h\in G \mid ghg^{-1} = h\}\right|\\
+      &= \frac 1{n^2} \sum_{g\in G} \left| \operatorname{Fix}(g) \right|\\
+      &\xlongequal{\text{Burnside's lemma}} \frac s n. \qedhere
+    \end{align*}
+  \end{proof}
+\end{exercise}
+
+\end{document}
