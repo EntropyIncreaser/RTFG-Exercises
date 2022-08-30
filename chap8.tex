@@ -1,0 +1,254 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Res}{Res}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{7}
+\chapter{Induced Representations}
+
+\setcounter{exercise}{1}
+\begin{exercise}
+  Let $H, K$ be subgroups of $G$. Let $\sigma\colon H \to S_{G/K}$ be given by
+  $\sigma_h(gK) = hgK$. Show that the set of double cosets $H\backslash G/K$ is the set of orbits of
+  $H$ on $G/K$.
+  \begin{proof}
+    For $xK \sim yK$, we have $h\in H$ such that $hxK = yK$, thus $HxK = HyK$. Conversely, if
+    $HxK = HyK$, we have $x \in HyK$, thus $x = h y k$, thus $h^{-1}xK = yK$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a group with a cyclic normal subgroup $H = \ang{a}$ of order
+  $k$. Suppose that $N_G(a) = H$, that is, $sa = as$ implies $s \in H$. Show that if
+  $\chi\colon H \to \bbC^*$ is the character given by $\chi(a^m) = e^{2\pi im/k}$, then $\Ind^G_H \chi$ is an
+  irreducible character of $G$.
+  \begin{proof}
+    Clearly $\chi$ itself is irreducible. For each $s\notin H$, since $s^{-1}Hs = H$, we have
+    $s^{-1}as = a^r$ for some $2\leq r \leq k-1$. Therefore we have $s^{-1} a^m s = a^{mr}$.
+    Therefore, $\chi^s(a^m) = \chi(a^{mr}) = e^{2\pi i mr / k}$. We have $\chi \neq \chi^s$.
+    By the Mackey's criterion, $\Ind_H^G \chi$ is an irreducible character.
+  \end{proof}
+\end{exercise}
+
+\setcounter{exercise}{5}
+\begin{exercise}
+  Let $N$ be a normal subgroup of a group $G$ and suppose that $\varphi\colon N \to \GL_d(\bbC)$ is
+  a representation. For $s \in G$, define $\varphi_s \colon N \to \GL_d(\bbC)$ by
+  $\varphi^s(n) = \varphi(s^{-1}ns)$. Prove that $\varphi$ is irreducible if and only if $\varphi^s$
+  is irreducible.
+  \begin{proof}
+    For each invariant subspace $V\leq \bbC^d$ such that $\varphi_g(V) = V$ for all $g$,
+    we have $\varphi^s_n(V) = \varphi_{s^{-1}ns}(V) = V$, so $V$ is also an invariant subspace
+    of $\varphi^s$. Conversely, an invariant subspace of $\varphi^s$ is an invariant subspace
+    of $(\varphi^s)^{s^{-1}} = \varphi$. Thus $\varphi$ is irreducible iff $\varphi^s$ is irreducible.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Show that if $G$ is a non-abelian group and $\varphi\colon Z(G) \to \GL_d(\bbC)$ is
+  an irreducible representation of the center of $G$, then $\Ind^G_{Z(G)}\varphi$ is not irreducible.
+  \begin{proof}
+    Take $s\notin Z(G)$, by $g\in Z(G)$ we have $\varphi^s(g) = \varphi(s^{-1}gs) = \varphi(g)$,
+    thus $\varphi^s = \varphi$. Since $G$ is non-abelian, such $s$ exists. Noticed that
+    $Z(G) \trianglelefteq G$, by Mackey's criterion, $\Ind_{Z(G)}^G \varphi$ is not irreducible.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  A representation $\varphi \colon G\to \GL(V)$ is called \emph{faithful} if it is one-to-one.
+  \begin{enumerate}
+    \item Let $H$ be a subgroup of $G$ and suppose $\varphi\colon H \to \GL_d(\bbC)$ is a faithful
+    representation. Show that $\varphi^G = \Ind^G_H \varphi$ is a faithful representation of $G$.
+    \begin{proof}
+      It's clear that $\varphi$ is faithful iff $\ker \varphi = 1$. Suppose $\varphi^G(g) = I$,
+      we have $[\varphi^G(g)]_{ii} = \varphi(t_i gt_i^{-1}) = I$, thus $t_igt_i^{-1} = 1$, we have
+      $g = 1$.
+    \end{proof}
+    \item Show that every representation of a simple group which is not a direct sum of
+    copies of the trivial representation is faithful.
+    \begin{proof}
+      Every representation can be decomposed to the direct sum of several irreducibles, it's not hard
+      to see that we only need to prove that, every nontrivial irreducible representation is faithful.
+      If its degree is greater than $1$, then such representation is not trivial. Otherwise consider
+      $\ker \varphi$. Since $G$ is simple and $\ker \varphi \trianglelefteq G$, we can only have
+      $\ker \varphi = 1$, thus $\varphi$ is faithful.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a group and let $H$ be a subgroup. Let $\sigma\colon G \to S_{G/H}$ be the group action
+  given by $\sigma_g(xH) = gxH$.
+  \begin{enumerate}
+    \item Show that $\sigma$ is transitive.
+    \begin{proof}
+      For each $xH$ and $yH$, we have $yH = \sigma_{yx^{-1}}(xH)$.
+    \end{proof}
+    \item Show that $H$ is the stabilizer of the coset $H$.
+    \begin{proof}
+      Trivial.
+    \end{proof}
+    \item Recall that if $1_H$ is the trivial character of $H$, then $\Ind^G_H 1_H$ is the character
+    $\chi_{\tilde \sigma}$ of the permutation representation $\tilde \sigma: G \to \GL(\bbC(G/H))$. Use Frobenius
+    reciprocity to show that the rank of $\sigma$ is the number of orbits of $H$ on $G/H$.
+    \begin{proof}
+      \begin{align*}
+        \Ind^G_H 1_H (g) &= \frac 1{|H|} |\{x\in G\mid x^{-1}gx\in H\}|\\
+        &= \frac 1{|H|} |\{x\in G\mid gxH= xH\}|\\
+        &= |\{xH \in G/H \mid gxH= xH\}|\\
+        &= \chi_{\tilde \sigma}(g).
+      \end{align*}
+      Thus we have
+      \begin{align*}
+        \rank \sigma &= \ang{\chi_{\tilde \sigma}, \chi_{\tilde \sigma}}\\
+        &= \ang{\Ind^G_H 1_H, \chi_{\tilde \sigma}}\\
+        &= \ang{1_H, \Res^G_H \chi_{\tilde \sigma}}\\
+        &= \frac 1{|H|} \sum_{h\in H} \chi_{\tilde \sigma}(h).
+      \end{align*}
+      By Burnside's lemma, $\frac 1{|H|} \sum_{h\in H} \chi_{\tilde \sigma}(h)$ is the number of orbits of $H$ on $G/H$.
+    \end{proof}
+    \item Conclude that $G$ is $2$-transitive on $G/H$ if and only if $H$ is transitive on the set
+    of cosets not equal to $H$ in $G/H$.
+    \begin{proof}
+      $G$ is $2$-transitive iff $\rank \sigma = 1$ iff the number of orbits of $H$ on $G/H$ is $1$.
+    \end{proof}
+    \item Show that the rank of $\sigma$ is also the number of double cosets in $H\backslash G/H$ either
+    directly or by using Mackey's Theorem.
+    \begin{proof}
+      Directly follows from Exercise 8.2.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Use Frobenius reciprocity to give another proof that if $\rho$ is an irreducible representation
+  of $G$, then the multiplicity of $\rho$ as a constituent of the regular representation is the
+  degree of $\rho$.
+  \begin{proof}
+    Noticed that the character of regular representation $\chi = \Ind_{\{1\}}^{G} 1$,
+    let the character of $\rho$ be $\chi'$, we have
+    \[ \ang{\chi, \chi'} = \ang{\Ind_{\{1\}}^G 1, \chi'}
+    = \ang{1, \Res_{\{1\}}^G \chi'}
+    = \chi'(1) = d. \qedhere \]
+  \end{proof}
+\end{exercise}
+
+\end{document}
