@@ -1,0 +1,206 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Res}{Res}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{8}
+\chapter{Another Theorem of Burnside}
+
+\begin{exercise}
+  Let $G$ be a finite group.
+  \begin{enumerate}
+    \item Prove that two elements $g, h \in G$ are conjugate if and only
+    if $\chi(g) = \chi(h)$ for all irreducible characters $\chi$.
+    \begin{proof}
+      Suppose $\chi(g) = \chi(h)$ for all characters $\chi$, we have
+      $\sum_{\chi \in \mathsf{X}} \chi(g)\overline{\chi(h)} > 0$,
+      by the second orthogonality relations, we must have $g$ and $h$ are conjugate.
+    \end{proof}
+    \item Show that the conjugacy class $C$ of an element $g \in G$ is real if and only if $\chi(g)$
+    is real for all irreducible characters $\chi$.
+    \begin{proof}
+      Let $C$ be the conjugacy class of $g$. $g$ is real iff $g$ and $g^{-1}$ are conjugate
+      iff $\chi(g) = \chi(g^{-1}) = \overline{\chi(g)}$ for all $\chi$.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\begin{exercise}
+  Prove that all characters of the symmetric group $S_n$ are real.
+  \begin{proof}
+    For every $\sigma\in S_n$, since the cycles of $\sigma$ and $\sigma^{-1}$ are the same
+    integer partition, they are conjugate. So all conjugacy class of $S_n$ are real, thus all
+    characters of $S_n$ are real.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a non-abelian group of order $155$. Prove that $G$ has $11$ conjugacy classes.
+  \begin{proof}
+    Noticed that $155 = 5\cdot 31$, the degree of irreducible presentations of $G$ can only be
+    $1$ or $5$. The number of degree one representations has the form $2n+1$,
+    the number of degree $5$ representations has the form $2m + 2$. So we have
+    $(2n+1) + (2m+2)\cdot 5^2 = 155$. We have $2n+50m = 104$. Noticed that the number of
+    degree one representations is $|G/G'| \mid |G|$, we have $2n+1 \mid 155$, with these restrictions
+    we have the only solution $(n, m) = (2, 2)$. So $(2n+1) + (2m+2) = 11$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Let $G$ be a group and let $\alpha$ be an automorphism of $G$.
+  \begin{enumerate}
+    \item If $\varphi\colon G \to \GL(V)$ is a representation, show that
+    $\alpha^*(\varphi) =\varphi \circ \alpha$ is a
+    representation of $G$.
+    \begin{proof}
+      Trivial.
+    \end{proof}
+    \item If $f \in L(G)$, define $\alpha^*(f) = f \circ \alpha$. Prove that
+    $\chi_{\alpha^*(\varphi)} = \alpha^*(\chi_\varphi)$.
+    \begin{proof}
+      $\chi_{\alpha^*(\varphi)}(g) = \Tr [\alpha^*(\varphi)(g)]
+      = \Tr [\varphi(\alpha(g))] = \chi_\varphi(\alpha(g)) = \alpha^*(\chi_\varphi)(g)$.
+    \end{proof}
+    \item Prove that if $\varphi$ is irreducible, then so is $\alpha^*(\varphi)$.
+    \begin{proof}
+      $\ang{\alpha^*(\chi), \alpha^*(\chi)} = \frac 1{|G|}\sum_{g\in G} |\chi(\alpha(g))|
+      = \frac 1{|G|}\sum_{g\in G} |\chi(g)| = \ang{\chi, \chi} = 1$.
+    \end{proof}
+    \item Show that if $C$ is a conjugacy class of $G$, then $\alpha(C)$ is also a conjugacy class
+    of $G$.
+    \begin{proof}
+      $y = gxg^{-1} \iff \alpha(y) = \alpha(g) \alpha(x) \alpha(g)^{-1}$.
+    \end{proof}
+    \item Prove that the number of conjugacy classes $C$ with $\alpha(C) = C$ is equal to the
+    number of irreducible characters $\chi$ with $\alpha^*(\chi) = \chi$.
+    \begin{proof}
+      Let $s$ be the number of conjugacy classes. Let $\varphi\colon S_s \to \GL_s(\bbC)$ be the
+      standard representation.
+      Consider $\varphi_{\alpha^*} \mathsf{X}$, it permutes the row $\chi$ to the row $\alpha^*(\chi)$,
+      we have $(\varphi_{\alpha^*}\mathsf X)_{\chi C} = (\alpha^*)^{-1}(\chi)(C)
+      = \chi(\alpha^{-1}(C)) = (\mathsf X \varphi_{\alpha})_{\chi C}$, so
+      $\varphi_\alpha = \mathsf X^{-1} \varphi_{\alpha*} \mathsf X$. Thus
+      $\Tr \varphi_\alpha = \Tr \varphi_{\alpha^*}$, they fixes the same number of elements.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\end{document}
