@@ -1,0 +1,173 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{corollary}{Corollary}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Res}{Res}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{9}
+\chapter{Representation Theory of the Symmetric Group}
+
+\setcounter{exercise}{2}
+\begin{exercise}
+  Prove that if $\lambda = (n - 1, 1)$, then the corresponding Sprecht
+  representation of $S_n$ is equivalent to the augmentation subrepresentation of the
+  standard representation of $S_n$.
+  \begin{proof}
+    For $\lambda = (n-1, 1)$, clearly $\varphi^\lambda$ is equivalent to the standard representation.
+    For each $\lambda$-tableaux $t$, we have $C_t = S_{\{t_{11}, t_{21}\}}$. Thus
+    $A_t = \varphi_1^\lambda - \varphi_{(t_{11}\ t_{21})}^\lambda$, then
+    $e_t = [t] - [(t_{11}\ t_{21})t]$. So the spanned subspace $S^\lambda$ is spanned by $x_1 - x_k$ for all $k$,
+    that is $\sum_i a_i x_i$ such that $\sum_i a_i = 0$. Let $v_0 = \sum_i x_i$, we have
+    $S^\lambda = (\bbC v_0)^\perp$, so $\psi^\lambda$ is the augmentation representation.
+  \end{proof}
+\end{exercise}
+
+\setcounter{exercise}{5}
+\begin{exercise}
+  Prove Corollary 10.2.18.
+  \begin{corollary}
+    Suppose $μ \vdash n$. Then $\psi^\mu$ appears with multiplicity one as an irreducible constituent
+    of $\varphi^\mu$. Any other irreducible constituent $\psi^\lambda$ of $\varphi^\mu$
+    satisfies $\lambda \trianglerighteq \mu$.
+  \end{corollary}
+  \begin{proof}
+    Suppose the multiplicity is $k$, since $\Hom(\psi^\mu, \varphi \oplus \varphi')
+    = \Hom(\psi^\mu, \varphi) \oplus \Hom(\psi^\mu, \varphi')$, we should have
+    $\dim \Hom_{S_n}(\psi^\mu, \varphi^\mu) = k$, therefore the multiplicity should be $k=1$.
+
+    Suppose we have such constituent $\psi^\lambda$, we can construct a nonzero homomorphism
+    $I_{S^\lambda} \oplus 0_{(S^\lambda)^\perp}$, so $\Hom(\psi^\lambda, \varphi^\mu)$ is nonzero,
+    we have $\lambda \trianglerighteq \mu$.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Prove that each character of $S_n$ takes on only rational values.
+  \begin{proof}
+    Let the $\bbQ$-span of $[t]$ be $\bbQ T^\lambda$, then by definition we have
+    $e_t \in \bbQ T^\lambda$ for each $\lambda$-tableaux $t$, and each $\psi^\lambda_\sigma$
+    has rational entries in the basis $[t]$. So choose a basis $B$ in $\bbQ T^\lambda$,
+    $\psi^\lambda_\sigma |_{B}$ still has rational entries, thus
+    $\chi^\lambda(g) = \Tr \left[\psi^\lambda_\sigma |_{B}(g)\right] \in \bbQ$.
+  \end{proof}
+\end{exercise}
+
+\end{document}
