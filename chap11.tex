@@ -1,0 +1,186 @@
+%!TEX TS-program = xelatex
+%!TEX encoding = UTF-8 Unicode
+\documentclass[11pt]{report}
+\usepackage[margin = 1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mleftright}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+\usepackage{tikz, tikz-cd}
+\usepackage{bbding}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{nicematrix}
+\usepackage{extarrows}
+\usepackage{lastpage}
+\usepackage{hyperref}
+
+\usepackage{fancyhdr}  % Header and Footer formatting
+
+\usetikzlibrary{decorations.markings}
+
+% \usepackage{mathpazo}
+\usepackage{unicode-math}
+\setmainfont[
+	BoldFont={TeX Gyre Termes Bold},
+	ItalicFont={TeX Gyre Termes Italic},
+	BoldItalicFont={TeX Gyre Termes Bold Italic},
+	PunctuationSpace=2
+]{TeX Gyre Termes}
+\setmathfont
+	[Extension = .otf,
+	math-style= TeX,
+  BoldFont = XITSMath-Bold.otf,
+  BoldItalicFont = XITS-BoldItalic.otf
+]{XITSMath-Regular}
+
+\usepackage{multicol}
+
+\hypersetup{colorlinks = true,
+            linkcolor = blue,
+            citecolor = red,
+            urlcolor = teal}
+
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\setlength{\headheight}{18pt}
+
+% Header and Footer Information
+\lhead{\small\emph{Baitian Li}}
+\chead{}
+\rhead{\textsc{Representation Theory of Finite Groups}}
+\lfoot{\today}
+\cfoot{}
+\rfoot{\thepage\ of \pageref{LastPage}}  % Counts the pages.
+
+\makeatletter % This provides a total page count as \ref{NumPages}
+\AtEndDocument{\immediate\write\@auxout{\string\newlabel{NumPages}{{\thepage}}}}
+\makeatother
+
+%\lineskiplimit=-\maxdimen\relax
+
+\usepackage{amsthm}  % This will create the Problem environment
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{corollary}{Corollary}
+\newtheoremstyle{mythm}%
+    {12pt}{}%
+    {\sffamily}{}%
+    {\bfseries \sffamily}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{mythm}
+
+\expandafter\let\expandafter\oldproof\csname\string\proof\endcsname
+\let\oldendproof\endproof
+\renewenvironment{proof}[1][\proofname]{%
+  \oldproof[\normalfont \bfseries #1]%
+}{\oldendproof}
+
+\newtheorem{exercise}{Exercise}[chapter]
+\renewcommand*{\proofname}{Proof}
+
+\newtheoremstyle{myans}%
+    {12pt}{}%
+    {}{}%
+    {\bfseries}{.}%
+    {.5em}%
+    {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}
+
+\theoremstyle{myans}
+\newtheorem*{answer}{Answer}
+
+\setlist[enumerate]{noitemsep, topsep = 0.2em}
+\setlist[enumerate, 1]{label = {\arabic*.}}
+% \setlist[enumerate, 2]{label = {(\alph*)}}
+\setlist[description]{topsep = 0.2em, listparindent = \parindent, font = \normalfont,
+  itemsep = 0em}
+
+\newcommand{\bbR}{\mathbb R}
+\newcommand{\bbN}{\mathbb N}
+\newcommand{\bbZ}{\mathbb Z}
+\newcommand{\bbQ}{\mathbb Q}
+\newcommand{\bbC}{\mathbb C}
+\newcommand{\Id}{\mathit{Id}}
+
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Tr}{Tr}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\GL}{GL}
+\DeclareMathOperator{\Ind}{Ind}
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\Supp}{Supp}
+
+\newcommand{\ang}[1]{\langle #1 \rangle}
+\newcommand{\Ang}[1]{\left\langle #1 \right\rangle}
+\newcommand{\norm}[1]{\| #1 \|}
+
+\begin{document}
+
+\setcounter{chapter}{10}
+\chapter{Probability and Random Walks on Groups}
+
+\begin{exercise}
+  Show that if $P$ is any probability on a finite group $G$, then $P*U=
+  U = U * P$. Deduce that $P^{*n} - U = (P - U)^{*n}$.
+  \begin{proof}
+    We have
+    \[ (P*U)(g) = \sum_{h\in G} P(gh^{-1})U(h)
+    = \frac 1{|G|} \sum_{h\in G} P(gh^{-1}) = \frac 1{|G|} = U(g). \]
+    Similarly,
+    \[ (U*P)(g) = \sum_{h\in G} U(gh^{-1})P(h)
+    = \frac 1{|G|} \sum_{h\in G} P(h) = \frac 1{|G|} = U(g). \]
+    Thus by induction, we have
+    \[ (P-U)^{*n} = (P^{*(n-1)} - U)*(P-U)
+    = P^{*n} - U - P^{*(n-1)}*U + U
+    = P^{*n} - U, \]
+    here $P^{*n}*U = U$ is also by induction.
+  \end{proof}
+\end{exercise}
+
+\begin{exercise}
+  Show that if $P$ is a probability on a finite group $G$ such that $P =
+  P * P$, then there is a subgroup $H$ of $G$ such that $P$ is the uniform
+  distribution on $H$.
+  \begin{proof}
+    Noticed that $\Supp P = \Supp(P*P) = \Supp P \cdot \Supp P$,
+    we have $H=\Supp P$ is nonempty and closed under multiplication.
+    Since $G$ is finite, $H$ is a subgroup. Therefore, we only need to prove
+    that if $\Supp P = G$ and $P*P = P$, then $P = U$.
+
+    Since $\Supp P = G$, we have $P$ is ergodic, thus
+    $\lim_{n\to \infty} \norm{P^{*n} - U}_{TV} = 0$.
+    Sicne $P*P=P$, we have $P^{*n} = P$, so
+    $\norm{P-U} = 0$, we have $P = U$.
+  \end{proof}
+\end{exercise}
+
+\setcounter{exercise}{7}
+\begin{exercise}
+  Let $P$ be a probability on a finite group $G$.
+  \begin{enumerate}[label=(\alph*)]
+    \item Show that if the sequence $(P^{*k} )$ converges to $U$, then $P$ is ergodic.
+    \begin{proof}
+      By definition, we have $N_g$ such that $P^{*n}(g) > 0$ for each $n \geq N_g$ for each $g$.
+      Then take $N = \max_{g\in G} N_g$, we have $\Supp(P^{*N}) = G$, thus $P$ is ergodic.
+    \end{proof}
+    \item Suppose in addition that $G$ is abelian. Show that the random walk driven by $P$
+    is ergodic if and only if $|\hat P(\chi)| < 1$ for all $\chi \in \hat G^{*}$. 
+    \begin{proof}
+      If $|\hat P(\chi)| < 1$ for all $\chi \in \hat G^{*}$, then by the Upper bound lemma,
+      we have $\norm{P^{*n}-U}_{TV}$ converges to $0$, thus $P^{*n}$ converges to $U$,
+      thus $P$ is ergodic. Conversely, if $P$ is ergodic, we have $\Supp P^{*N} = G$ for some $N$.
+      Since the equation of $|\hat P(\chi)| = |\sum_{g\in G} P(g)\chi(g)| \leq 1$ holds only if
+      all $P(g)\chi(g)$ are on the same direction, it cannot be true for any nontrivial
+      character.
+    \end{proof}
+  \end{enumerate}
+\end{exercise}
+
+\end{document}
